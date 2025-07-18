@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20Pausable
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
 // Wormhole imports (conceptual - actual imports would depend on Wormhole SDK)
 interface IWormholeRelayer {
