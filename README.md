@@ -13,7 +13,29 @@ The XMRT DAO is managed by **Autonomous ElizaOS**, a production-ready AI agent s
 - **Emergency Response**: Automatic threat detection and response
 - **Human Oversight**: Optional human approval for high-risk decisions
 
+### DenoClaw / SupaClaw
+
+XMRT DAO's agent operations run entirely within the **Supabase Deno runtime** via the DenoClaw framework:
+
+- **60-Second Execution**: Each edge function invocation handles a checkpointed sub-operation
+- **Task Decomposition**: Complex workflows are broken into sequenced operations
+- **State Persistence**: Checkpoints stored in Supabase Postgres between invocations
+- **PDF Operations**: Agents can manipulate PDFs (merge, sign, watermark, compress) entirely in Deno
+- **No External Servers**: All agent logic runs in Supabase Edge Functions
+
 📖 **[Full Autonomous ElizaOS Documentation](AUTONOMOUS_ELIZA_README.md)**
+
+### MESHNET
+
+Peer-to-peer mesh networking for **offline-capable Monero mining**:
+
+- Devices form local mesh networks without internet via multicast UDP
+- Mining jobs distributed across mesh peers
+- Bridge nodes relay shares to pools when connectivity is available
+- Validators verify share hashes before relay
+- Designed for hostile/disconnected environments
+
+📖 **[MESHNET Protocol Documentation](backend/xmrt-dao-backend/src/meshnet/README.md)**
 
 ## 📚 Organizational Structure
 
@@ -38,7 +60,11 @@ Each `ux/<dapp-name>` branch contains a complete, self-contained dApp or user ex
 
 ## 📂 Repository Contents
 
-- `backend/`: Backend services and APIs for the ecosystem.
+- `backend/`: Backend services and APIs for the ecosystem, including:
+  - **DenoClaw / SupaClaw**: Agent execution framework in Supabase Edge Functions
+  - **MESHNET**: Peer-to-peer mesh networking for offline Monero mining
+  - **ZK Services**: Zero-knowledge proof generation and verification
+  - **Cross-Chain**: LayerZero and Wormhole bridge services
 - `contracts/`: Smart contracts for XMRTNET, including tokens, governance, and dApp-specific contracts.
 - `frontend/`: Contains the source code for various frontend applications. Each dApp will have its own directory here (e.g., `frontend/cashdapp/`).
 - `docs/`: Documentation, whitepapers, and technical specifications.
