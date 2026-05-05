@@ -18,10 +18,22 @@ from src.routes.ai_agents import ai_agents_bp
 from src.routes.storage import storage_bp
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
-app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 
-# Enable CORS for all routes
-CORS(app)
+# Security: SECRET_KEY must be provided via environment variable
+# Do NOT hardcode secrets - this will raise an error in production if unset
+secret_key = os.environ.get('SECRET_KEY')
+if not secret_key:
+    import secrets
+    secret_key = secrets.token_hex(32)
+    print("WARNING: SECRET_KEY not set in environment. Using a temporary random key. Sessions will not persist across restarts.")
+app.config['SECRET_KEY'] = secret_key
+
+# Enable CORS with restrictions - allow all only in development
+# In production, set ALLOWED_ORIGINS to specific domains
+cors_origins = os.environ.get('ALLOWED_ORIGINS', '*')
+if cors_origins != '*':
+    cors_origins = [origin.strip() for origin in cors_origins.split(',')]
+CORS(app, origins=cors_origins)
 
 # Register blueprints
 app.register_blueprint(user_bp, url_prefix='/api')
@@ -52,4 +64,6 @@ def serve(path):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # debug mode only when explicitly enabled via environment
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
