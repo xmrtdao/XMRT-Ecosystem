@@ -595,8 +595,19 @@ contract AutonomousTreasury is
      * @dev Execute asset rebalancing
      */
     function _executeAssetRebalance(address _asset, uint256 _targetValue, uint256 _currentValue) internal {
-        // Implement rebalancing logic
-        // This would involve buying/selling assets to reach target allocation
+        AssetInfo storage assetInfo = assets[_asset];
+
+        // Calculate allocation percentage based on total treasury value
+        uint256 totalValue = _calculateTotalTreasuryValue();
+        if (totalValue > 0) {
+            assetInfo.currentAllocation = (assetInfo.balance * BASIS_POINTS) / totalValue;
+        }
+
+        // For a full implementation, this would interact with DEX routers or AMMs
+        // to buy/sell assets to reach target allocation. Here we record the rebalance.
+        assetInfo.lastRebalance = block.timestamp;
+
+        emit RebalanceExecuted(totalValue, block.timestamp);
     }
 
     /**
@@ -674,8 +685,25 @@ contract AutonomousTreasury is
      * @dev Get pending yield for asset
      */
     function _getPendingYield(address _asset) internal view returns (uint256) {
-        // Implement yield calculation logic for different protocols
-        return 0; // Placeholder
+        AssetInfo storage assetInfo = assets[_asset];
+        if (!assetInfo.isActive || assetInfo.category != AssetCategory.Yield) {
+            return 0;
+        }
+
+        uint256 principal = assetInfo.balance;
+        uint256 timeElapsed = block.timestamp - assetInfo.lastRebalance;
+        if (timeElapsed == 0 || principal == 0) {
+            return 0;
+        }
+
+        // Base APY of 500 basis points (5%) as a conservative default for yield assets
+        // In production, this would query an oracle or yield strategy contract
+        uint256 baseAPY = 500;
+
+        // Calculate simple interest: principal * APY * timeElapsed / (365 days * BASIS_POINTS)
+        uint256 pendingYield = (principal * baseAPY * timeElapsed) / (365 days * BASIS_POINTS);
+
+        return pendingYield;
     }
 
     /**

@@ -126,6 +126,7 @@ contract AutonomousDAO is
     mapping(address => bool) public isRegisteredAgent;
     mapping(uint256 => address[]) public proposalAgentVotes;
     mapping(address => uint256[]) public agentExecutionHistory;
+    address[] public agentList;
 
     // Multi-signature for critical operations
     mapping(bytes32 => mapping(address => bool)) public multiSigApprovals;
@@ -220,6 +221,7 @@ contract AutonomousDAO is
 
         isRegisteredAgent[_agentAddress] = true;
         agentCount++;
+        agentList.push(_agentAddress);
 
         _grantRole(AI_AGENT_ROLE, _agentAddress);
         if (_authority >= AgentAuthority.Moderate) {
@@ -411,10 +413,20 @@ contract AutonomousDAO is
         address bestAgent = address(0);
         uint256 bestScore = 0;
 
-        // Simple scoring: success rate + execution count
-        for (uint256 i = 0; i < agentCount; i++) {
-            // This is a simplified approach - in practice, you'd iterate through registered agents
-            // For now, return the first suitable agent found
+        for (uint256 i = 0; i < agentList.length; i++) {
+            address candidate = agentList[i];
+            RegisteredAgent storage agent = registeredAgents[candidate];
+
+            if (!agent.active) continue;
+            if (agent.authority < _requiredAuthority) continue;
+
+            // Score = successRate * 100 + executionCount (weighted toward reliability)
+            uint256 score = agent.successRate * 100 + agent.executionCount;
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestAgent = candidate;
+            }
         }
 
         return bestAgent;
