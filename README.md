@@ -4,90 +4,71 @@ Welcome to the XMRT-Ecosystem repository! This repository houses the various dec
 
 ## 🤖 Autonomous ElizaOS
 
-The XMRT DAO is managed by **Autonomous ElizaOS**, a production-ready AI agent system that:
+ElizaOS is the brain of the XMRT DAO. It:
+- Proposes governance actions autonomously
+- Manages treasury rebalancing strategies
+- Coordinates mesh network node deployment
+- Interfaces with human executives for approval
 
-- **Fully Manages DAO Operations**: Governance, treasury, community, security, and analytics
-- **GPT-5 Ready**: Seamless integration when GPT-5 becomes available
-- **Production Deployed**: High-availability, fault-tolerant autonomous operations
-- **Multi-Chain Support**: Operates across Ethereum, Polygon, BSC, Avalanche, Arbitrum, and Optimism
-- **Emergency Response**: Automatic threat detection and response
-- **Human Oversight**: Optional human approval for high-risk decisions
+## 📜 Smart Contracts
 
-### DenoClaw / SupaClaw
+| Contract | Purpose | Status |
+|----------|---------|--------|
+| `XMRT.sol` | ERC-20 token with governance | ✅ Implemented |
+| `DAO_Treasury.sol` | Multi-sig treasury management | ✅ Implemented |
+| `AutonomousTreasury.sol` | AI-managed yield strategies | ✅ Implemented |
+| `Governance.sol` | Proposal/vote/tally logic | ✅ Implemented |
+| `AutonomousDAO.sol` | Agent registry + permissions | ✅ Implemented |
+| `Vault.sol` | Asset custody | ✅ Implemented |
+| `XMRTCrossChain.sol` | Cross-chain bridging | ✅ Implemented |
+| `XMRTLayerZeroOFT.sol` | LayerZero OFT standard | ✅ Implemented |
 
-XMRT DAO's agent operations run entirely within the **Supabase Deno runtime** via the DenoClaw framework:
+### Key Functions
 
-- **60-Second Execution**: Each edge function invocation handles a checkpointed sub-operation
-- **Task Decomposition**: Complex workflows are broken into sequenced operations
-- **State Persistence**: Checkpoints stored in Supabase Postgres between invocations
-- **PDF Operations**: Agents can manipulate PDFs (merge, sign, watermark, compress) entirely in Deno
-- **No External Servers**: All agent logic runs in Supabase Edge Functions
+#### AutonomousTreasury.sol
+- `_executeAssetRebalance(address, uint256, uint256)` — Rebalances asset allocation based on deviation from target
+- `_getPendingYield(address)` — Calculates simple interest: `principal * APY * time / (365 * BASIS_POINTS)`
+- `_harvestAssetYield(address, uint256)` — Records yield generation
 
-📖 **[Full Autonomous ElizaOS Documentation](AUTONOMOUS_ELIZA_README.md)**
+## 🗂️ Project Structure
 
-### MESHNET
+```
+XMRT-Ecosystem/
+├── contracts/          Solidity smart contracts
+├── backend/            Python Flask services
+│   ├── ai-automation-service/
+│   ├── cross-chain-service/
+│   └── xmrt-dao-backend/
+├── frontend/           React/Next.js interface
+└── scripts/            Deployment and utility scripts
+```
 
-Peer-to-peer mesh networking for **offline-capable Monero mining**:
+## 🚀 Deployment
 
-- Devices form local mesh networks without internet via multicast UDP
-- Mining jobs distributed across mesh peers
-- Bridge nodes relay shares to pools when connectivity is available
-- Validators verify share hashes before relay
-- Designed for hostile/disconnected environments
+```bash
+# Compile contracts
+forge build
 
-📖 **[MESHNET Protocol Documentation](backend/xmrt-dao-backend/src/meshnet/README.md)**
+# Run tests
+forge test
 
-## 📚 Organizational Structure
+# Deploy to testnet
+forge script scripts/Deploy.s.sol --rpc-url $RPC_URL --broadcast
+```
 
-This repository is organized into a `main` branch that serves as the central hub for the entire XMRTNET DAO, linking to various independent dApps. Each major dApp or user experience (UX) within the ecosystem resides in its own dedicated branch, following a `ux/<dapp-name>` naming convention.
+## 🔗 Related Repos
 
-This structure allows for independent development, testing, and deployment of each dApp, while maintaining a cohesive overview on the `main` branch.
+- [suite](https://github.com/xmrtdao/suite) — Supabase edge functions + AI chat
+- [xmrtnet](https://github.com/xmrtdao/xmrtnet) — Flask backend services
+- [cashdapp](https://github.com/xmrtdao/cashdapp) — Mobile payment interface
+- [zero-claw](https://github.com/xmrtdao/zero-claw) — ZK governance layer (AMD Hackathon 2026)
 
-### **`main` Branch (XMRTNET DAO Hub)**
+## 🛡️ Security
 
-The `main` branch represents the overarching XMRTNET Decentralized Autonomous Organization. It will feature a high-level overview of the ecosystem and provide links and entry points to all the individual dApps.
+All contracts have been audited for:
+- Reentrancy protection
+- Access control (OpenZeppelin AccessControl)
+- Integer overflow checks (Solidity ^0.8.19)
+- Yield calculation accuracy
 
-### **`ux/<dapp-name>` Branches (Individual dApps)**
-
-Each `ux/<dapp-name>` branch contains a complete, self-contained dApp or user experience. For example:
-
-- `ux/cashdapp`: The XMRTNET CashDapp, a comprehensive financial application including dashboard, payments (terminal), banking, assets management, and user settings.
-- `ux/trading-dapp`: The decentralized exchange (DEX) or trading interface for XMRT and other tokens.
-- `ux/governance-dapp`: The dApp for XMRTNET DAO governance, allowing users to propose, vote on, and execute proposals.
-- `ux/staking-dapp`: The dApp for staking XMRT tokens and earning rewards.
-- `ux/nft-marketplace`: The dApp for browsing, buying, selling, and managing NFTs within the XMRT ecosystem.
-- `ux/lending-dapp`: The dApp for decentralized lending and borrowing.
-
-## 📂 Repository Contents
-
-- `backend/`: Backend services and APIs for the ecosystem, including:
-  - **DenoClaw / SupaClaw**: Agent execution framework in Supabase Edge Functions
-  - **MESHNET**: Peer-to-peer mesh networking for offline Monero mining
-  - **ZK Services**: Zero-knowledge proof generation and verification
-  - **Cross-Chain**: LayerZero and Wormhole bridge services
-- `contracts/`: Smart contracts for XMRTNET, including tokens, governance, and dApp-specific contracts.
-- `frontend/`: Contains the source code for various frontend applications. Each dApp will have its own directory here (e.g., `frontend/cashdapp/`).
-- `docs/`: Documentation, whitepapers, and technical specifications.
-- `test/`: Test suites for smart contracts and backend services.
-- `monitoring/`: Tools and configurations for monitoring the ecosystem.
-- `scripts/`: Utility scripts for deployment, testing, and development.
-- `vercel.json`: Vercel deployment configuration for the main branch and potentially for individual dApps.
-- `.env.example`: Example environment variables for local development and deployment.
-- `DEPLOYMENT.md`: Detailed deployment instructions for the ecosystem.
-
-## 🚀 Getting Started
-
-To get started with local development or deployment, please refer to the `DEPLOYMENT.md` file for detailed instructions.
-
-## 🤝 Contributing
-
-We welcome contributions to the XMRT-Ecosystem! Please refer to our [Contribution Guidelines](CONTRIBUTING.md) (to be created) for more information.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-*This README.md is a living document and will be updated as the XMRT-Ecosystem evolves.*
-
+See `SECURITY.md` for detailed policy.
