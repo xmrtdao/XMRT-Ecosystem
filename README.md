@@ -1,5 +1,8 @@
 # XMRT-Ecosystem - Fully Autonomous DAO
 
+[![HF Space](https://img.shields.io/badge/🤗%20Hugging%20Face-Space-blue)](https://huggingface.co/spaces/XMRTDAO/XMRT-Ecosystem)
+[![GitHub](https://img.shields.io/badge/GitHub-Repo-black)](https://github.com/xmrtdao/XMRT-Ecosystem)
+
 Welcome to the XMRT-Ecosystem repository! This repository houses the various decentralized applications (dApps) and core components that form the XMRTNET ecosystem, powered by **Autonomous ElizaOS** - a fully autonomous AI agent system.
 
 ## 🤖 Autonomous ElizaOS
